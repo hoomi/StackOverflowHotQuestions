@@ -20,7 +20,7 @@ public class MyActivity extends ActionBarActivity {
         setContentView(R.layout.activity_my);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new QuestionsFragment())
+                    .replace(R.id.container, new QuestionsFragment(),"questionFragment")
                     .commit();
         }
     }
