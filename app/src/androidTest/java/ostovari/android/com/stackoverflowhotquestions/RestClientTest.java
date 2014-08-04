@@ -986,7 +986,7 @@ public class RestClientTest extends InstrumentationTestCase {
     public void testParsingCorrectnessHttpResponse() {
         RestClient restClient = RestClient.getInstance();
         try {
-            HttpResponse response = generateResponse(shortTestJson,"");
+            HttpResponse response = generateResponse(shortTestJson, "");
             Method parseQuestions = TestUtils.getMethod("parseQuestions", RestClient.class, HttpResponse.class);
             Questions questions = (Questions) parseQuestions.invoke(restClient, response);
             assertEquals(shortJsonQuestions, questions);
@@ -1012,7 +1012,7 @@ public class RestClientTest extends InstrumentationTestCase {
         response.addHeader("Content-Encoding", encoding);
         InputStream stream;
         if ("gzip".equals(encoding)) {
-            stream = new GZIPInputStream(new ByteArrayInputStream(string.getBytes()),string.length());
+            stream = new GZIPInputStream(new ByteArrayInputStream(string.getBytes(), 0, string.length()), string.length());
         } else {
             stream = new ByteArrayInputStream(string.getBytes());
         }

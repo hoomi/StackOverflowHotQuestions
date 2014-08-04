@@ -6,6 +6,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -27,11 +30,18 @@ public class QuestionsFragment extends ListFragment {
     private QuestionAdapter questionAdapter;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        questionAdapter = new QuestionAdapter(getActivity(), R.layout.question_row);
-        setListAdapter(questionAdapter);
+        setEmptyText(getString(R.string.no_question_found));
         downloadQuestions();
+        getView().setBackgroundColor(getResources().getColor(android.R.color.black));
     }
 
 
@@ -39,11 +49,17 @@ public class QuestionsFragment extends ListFragment {
         if (questionTask == null) {
             questionTask = new AsyncTask<Void, Void, Questions>() {
                 @Override
+                protected void onPreExecute() {
+                    setListShown(false);
+                    super.onPreExecute();
+                }
+
+                @Override
                 protected Questions doInBackground(Void... params) {
                     Questions questions = null;
                     try {
                         questions = RestClient.getInstance().getTheListOfQuestions();
-                    }catch (IllegalStateException e) {
+                    } catch (IllegalStateException e) {
                         e.printStackTrace();
                     }
                     return questions;
@@ -51,14 +67,36 @@ public class QuestionsFragment extends ListFragment {
 
                 @Override
                 protected void onPostExecute(Questions result) {
+                    if (questionAdapter == null) {
+                        questionAdapter = new QuestionAdapter(getActivity(), R.layout.question_row);
+                        setListAdapter(questionAdapter);
+                    }
                     if (result != null) {
                         questionAdapter.setQuestions(result);
                     }
+                    setListShown(true);
                     questionTask = null;
 
                 }
             };
             questionTask.execute();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.my, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.action_refresh:
+                downloadQuestions();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

@@ -4,5 +4,8 @@
     <string name="app_name">StackOverFlowHotQuestions</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="refresh">Refresh</string>
+    <string name="no_question_found">Unable to get the questions</string>
+    <string name="loading">Loading...</string>
 
 </resources>
